@@ -6,4 +6,4 @@
 - JavaScript
 
 ## Host link :
-> 
+> https://gurpreet-legend.github.io/Snake-Game/
