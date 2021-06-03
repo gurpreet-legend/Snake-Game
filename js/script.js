@@ -168,7 +168,7 @@ function gameEngine() {
     foodElement.style.display="flex";
     foodElement.style.justifyContent = "center";
     foodElement.style.alignItems = "center";
-    foodElement.style.fontSize = "2.5rem";
+    foodElement.style.fontSize = "2rem";
     // foodElement.style. = ;
     foodElement.innerHTML = "🍖";
     board.appendChild(foodElement);
