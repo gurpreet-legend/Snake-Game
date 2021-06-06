@@ -67,13 +67,15 @@ function isCollision(){
     for (let i = 1; i < snakeArr.length; i++) {
         if(snakeArr[0].x === snakeArr[i].x && snakeArr[0].y === snakeArr[i].y)
         {
+            console.log("i caused the death")
             return true;
         }
     }
 
     // When you collide with wall
-    if(snakeArr[0].x >=18 || snakeArr[0].x<0 || snakeArr[0].y>=18 || snakeArr[0].y <0)
+    if(snakeArr[0].x >18 || snakeArr[0].x<1 || snakeArr[0].y>18 || snakeArr[0].y <1)
     {
+        console.log("i caused the death wall")
         return true;
     }
 }
@@ -120,7 +122,7 @@ function gameEngine() {
     }
 
     //(ii) When food is eaten: (Increment snakeArr and generate new Food)
-    if(snakeArr[0].x === food.x && snakeArr[0].y === food.y){
+    if(onFoodSanke(food)){
         eatSound.play();
         score += 1; 
         scoreVal.innerHTML = `Score : `+score;
@@ -131,7 +133,8 @@ function gameEngine() {
         snakeArr.unshift({x: snakeArr[0].x + snakeDirection.x, y: snakeArr[0].y + snakeDirection.y})
         let a = 2;
         let b = 16;
-        food = { x: Math.round(a + (b-a)*Math.random()) , y: Math.round(a + (b-a)*Math.random())} //********************* BUG: WHAT IF FOOD IS GENERATED AT THE BODY OF SNAKE!!//
+        food = getRandomFoodPosition() //********************* BUG: WHAT IF FOOD IS GENERATED AT THE BODY OF SNAKE!!//
+
     }
     
     //(iii) Updation:
@@ -168,7 +171,7 @@ function gameEngine() {
     foodElement.style.display="flex";
     foodElement.style.justifyContent = "center";
     foodElement.style.alignItems = "center";
-    foodElement.style.fontSize = "2rem";
+    foodElement.style.fontSize = "1.5rem"; //this size will not led to distortion of grid :)
     // foodElement.style. = ;
     foodElement.innerHTML = "🍖";
     board.appendChild(foodElement);
@@ -185,6 +188,9 @@ window.addEventListener('keydown', (e)=>{
         snakeDirection = { x:0, y:0};
         main();
 });
+
+let lastArrowDirection = { x: 0, y: 0 };
+//this will prevernt snake to change direction in 180 degrees simply check for the current direction and previous direction
 window.addEventListener('keydown', (e)=>{
     // snakeDirection = { x:0 , y:1};
     moveSound.play();
@@ -192,30 +198,71 @@ window.addEventListener('keydown', (e)=>{
     //Assigning keys:
     switch (e.key) {
         case "ArrowUp":
-            // console.log("ArrowUp") 
+            if (lastArrowDirection.y == 1) {
+                snakeDirection=lastArrowDirection;
+                break;
+            }
+            console.log("ArrowUp") 
             snakeDirection.x = 0;
             snakeDirection.y = -1;
             break;
         case "ArrowDown":
             // console.log("ArrowDown") 
+            if (lastArrowDirection.y == -1) {
+                snakeDirection=lastArrowDirection;
+                break;
+            }
             snakeDirection.x = 0;
             snakeDirection.y = 1;
             break;
         case "ArrowLeft":
             // console.log("ArrowLeft")
+            if (lastArrowDirection.x == 1){
+                snakeDirection=lastArrowDirection;
+                break;
+            }
             snakeDirection.x = -1;
             snakeDirection.y = 0;
             break;
         case "ArrowRight":
             // console.log("ArrowRight") 
+            if (lastArrowDirection.x == -1){
+                snakeDirection=lastArrowDirection;
+                break;
+            }
             snakeDirection.x = 1;
             snakeDirection.y = 0;
             break;  
         default:
             break;
     }
+    lastArrowDirection = snakeDirection;
 })
+
+
+const SIZE = 18;
+
+function getRandomFoodPosition() {
+    let newFoodPosition;
+    while (newFoodPosition == null || onFoodSanke(newFoodPosition)) {
+        let a = Math.floor(Math.random() * SIZE) + 1;
+        let b = Math.floor(Math.random() * SIZE) + 1;
+        newFoodPosition = { x: a, y: b };
+    }
+    return newFoodPosition;
+}
+
+function onFoodSanke(foodPosition) {
+    return snakeArr.some(segment => {
+        if (segment.x === foodPosition.x && segment.y === foodPosition.y) {
+            return true;
+        }
+    });
+}
 
 restartBtn.addEventListener("click", ()=>{
     location.reload();
 })
+
+
+
