@@ -79,7 +79,26 @@ function isCollision(){
         return true;
     }
 }
+const SIZE = 18;
+// Function for get random food position not at Snake's body
+function getRandomFoodPosition() {
+    let newFoodPosition;
+    while (newFoodPosition == null || onFoodSanke(newFoodPosition)) {
+        let a = Math.floor(Math.random() * SIZE) + 1;
+        let b = Math.floor(Math.random() * SIZE) + 1;
+        newFoodPosition = { x: a, y: b };
+    }
+    return newFoodPosition;
+}
 
+// Function to check if food is on Snake body
+function onFoodSanke(foodPosition) {
+    return snakeArr.some(segment => {
+        if (segment.x === foodPosition.x && segment.y === foodPosition.y) {
+            return true;
+        }
+    });
+}
 function gameEngine() {
     //Part1: Updating the Snake array and food
     //(i) When Collision happens:
@@ -238,27 +257,6 @@ window.addEventListener('keydown', (e)=>{
     }
     lastArrowDirection = snakeDirection;
 })
-
-
-const SIZE = 18;
-
-function getRandomFoodPosition() {
-    let newFoodPosition;
-    while (newFoodPosition == null || onFoodSanke(newFoodPosition)) {
-        let a = Math.floor(Math.random() * SIZE) + 1;
-        let b = Math.floor(Math.random() * SIZE) + 1;
-        newFoodPosition = { x: a, y: b };
-    }
-    return newFoodPosition;
-}
-
-function onFoodSanke(foodPosition) {
-    return snakeArr.some(segment => {
-        if (segment.x === foodPosition.x && segment.y === foodPosition.y) {
-            return true;
-        }
-    });
-}
 
 restartBtn.addEventListener("click", ()=>{
     location.reload();
